@@ -13,4 +13,5 @@ migrate = Migrate(app, db)
 
 jwt = JWTManager(app)
 
-# from app import route
+from app import route, response
+from app.model import Notes, Users
