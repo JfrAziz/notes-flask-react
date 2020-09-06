@@ -17,13 +17,9 @@ def login():
     else:
         return response.METHOD_NOT_ALLOWED([],"Wrong HTTP method")
 
-# @app.route('/users/<user_name>', methods=['PUT'])
-# def updatUser():
-#     if request.method == 'PUT':
-#         return UsersController.update(user_name)
-#     else:
-#         return response.METHOD_NOT_ALLOWED([],"Wrong HTTP method")
-
-@app.route('/all')
-def allUsers():
-   return UsersController.all()
+@app.route('/users/<int:id>', methods=['GET'])
+def users(id):
+    if request.method == 'GET':
+        return UsersController.show(id)
+    else:
+        return response.METHOD_NOT_ALLOWED([],"Wrong HTTP method")

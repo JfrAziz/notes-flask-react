@@ -3,23 +3,9 @@ from app.model.Users import Users
 from flask import request
 from app import response, db
 from sqlalchemy import exc
-from flask_jwt_extended import create_access_token, create_refresh_token
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
 
 
-
-def all():
-    try:
-        user = Users.query.all()
-    
-        if not user:
-            return response.NOT_FOUND([], "Not found")
-
-        data = transform(user)
-
-        return response.OK(data, "All account loaded")
-    except Exception as e:
-        return response.INTERNAL_SERVER_ERROR([], 'failed to load user data')
-    
 
 
 def signup():
@@ -55,10 +41,7 @@ def login():
         if not user.checkPassword(password):
             return response.UNAUTHORIZED([], 'Your credentials is invalid')
 
-        expires = datetime.timedelta(days=1)
-        expires_refresh = datetime.timedelta(days=3)
-        access_token = create_access_token({'id': user.id}, fresh=True, expires_delta=expires)
-        refresh_token = create_refresh_token({'id': user.id}, expires_delta=expires_refresh)
+        access_token, refresh_token = getToken(user.id)    
 
         return response.OK({
             "token_access": access_token,
@@ -69,28 +52,31 @@ def login():
         return response.INTERNAL_SERVER_ERROR('', "Failed to login")
         
 
-# def show(user_name):
+@jwt_required
+def show(id):
+    try:
+        current_user = get_jwt_identity()
+        if current_user and current_user['id'] == id:
+            user = Users.query.filter_by(id=current_user['id']).first()
+            if not user:
+                return response.NOT_FOUND([], 'No user found')
+            data = singleTransform(user)
+            return response.OK(data, "User data loaded")
+
+        else:
+            return response.UNAUTHORIZED([], "Your credential is invalid")
+
+    except Exception as e:
+        return response.INTERNAL_SERVER_ERROR([], "Failed to login")
 
 
-# def update(user_name):
-#     try:
-#         user = Users.query.filter_by(user_name=user_name).first()
-#         if not user:
-#             return response.NOT_FOUND([], 'No user found')
 
-#         user.user_name = request.json['userName'].strip()
-#         user.email = request.json['email'].strip()
-#         user.name = request.json['name'].strip()
-#         user.setPassword(request.json['password'])
-
-#         db.session.commit()
-
-#         return response.OK([], "Update Success")
-
-#     except exc.IntegrityError:
-#         return response.BAD_REQUEST([], "Integrity error, check email and user_name")
-#     except Exception as e:
-#         return response.INTERNAL_SERVER_ERROR([], "Internal server error")
+def getToken(id):
+    expires = datetime.timedelta(days=1)
+    expires_refresh = datetime.timedelta(days=3)
+    access_token = create_access_token({'id': id}, fresh=True, expires_delta=expires)
+    refresh_token = create_refresh_token({'id': id}, expires_delta=expires_refresh)
+    return access_token, refresh_token
 
 
 def transform(values):
@@ -98,6 +84,7 @@ def transform(values):
     for i in values:
         array.append(singleTransform(i))
     return array
+
 
 def singleTransform(User):
     return {
