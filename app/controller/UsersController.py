@@ -7,6 +7,21 @@ from flask_jwt_extended import create_access_token, create_refresh_token, jwt_re
 
 
 
+def all():
+    try:
+        user = Users.query.all()
+    
+        if not user:
+            return response.NOT_FOUND([], "Not found")
+
+        data = transform(user)
+
+        return response.OK(data, "All account loaded")
+    except Exception as e:
+        print(e)
+        return response.INTERNAL_SERVER_ERROR([], 'failed to load user data')
+    
+
 
 def signup():
     try:
@@ -20,7 +35,12 @@ def signup():
         db.session.add(user)
         db.session.commit()
 
-        return response.CREATED([], 'Successfully Add Users')
+        access_token, refresh_token = getToken(user.id)
+        
+        return response.CREATED({
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+        }, 'Successfully Add Users')
 
     except exc.IntegrityError:
         return response.BAD_REQUEST([], "Integrity error, check email and user_name")
@@ -44,8 +64,8 @@ def login():
         access_token, refresh_token = getToken(user.id)    
 
         return response.OK({
-            "token_access": access_token,
-            "token_refresh": refresh_token,
+            "access_token": access_token,
+            "refresh_token": refresh_token,
         }, "Login Succes")
 
     except Exception as e:
@@ -74,8 +94,8 @@ def show(id):
 def getToken(id):
     expires = datetime.timedelta(days=1)
     expires_refresh = datetime.timedelta(days=3)
-    access_token = create_access_token({'id': id}, fresh=True, expires_delta=expires)
-    refresh_token = create_refresh_token({'id': id}, expires_delta=expires_refresh)
+    access_token = create_access_token({'user_id': id}, fresh=True, expires_delta=expires)
+    refresh_token = create_refresh_token({'user_id': id}, expires_delta=expires_refresh)
     return access_token, refresh_token
 
 
