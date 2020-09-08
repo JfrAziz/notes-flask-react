@@ -24,11 +24,6 @@ def users(id):
     else:
         return response.METHOD_NOT_ALLOWED([],"Wrong HTTP method")
 
-@app.route('/users')
-def allUsers():
-   return UsersController.all()
-
-
 @app.route('/notes', methods=['GET','POST'])
 def notes():
     if request.method == 'GET':
@@ -44,5 +39,7 @@ def notes_by_id(id):
         return NotesController.edit(id)
     elif request.method == 'GET':
         return NotesController.show(id)
+    elif request.method == 'DELETE':
+        return NotesController.delete(id)
     else:
         return response.METHOD_NOT_ALLOWED([], "Wrong HTTP method")

@@ -6,23 +6,6 @@ from sqlalchemy import exc
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
 
 
-
-def all():
-    try:
-        user = Users.query.all()
-    
-        if not user:
-            return response.NOT_FOUND([], "Not found")
-
-        data = transform(user)
-
-        return response.OK(data, "All account loaded")
-    except Exception as e:
-        print(e)
-        return response.INTERNAL_SERVER_ERROR([], 'failed to load user data')
-    
-
-
 def signup():
     try:
         name = request.json['name'].strip()

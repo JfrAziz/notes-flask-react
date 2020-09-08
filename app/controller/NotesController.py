@@ -33,7 +33,8 @@ def add():
             db.session.add(note)
             db.session.commit()
 
-            return response.CREATED([], "success add note")
+            data = singleTransform(note)
+            return response.CREATED(data, "success add note")
         else:
             return response.UNAUTHORIZED([], "Your credential is invalid")
     except Exception as e:
@@ -74,14 +75,34 @@ def edit(id):
             db.session.add(note)
             db.session.commit()
 
-            return response.CREATED([], "Success edit note")
+            data = singleTransform(note)
+
+            return response.CREATED(data, "Success edit note")
         else:
             return response.UNAUTHORIZED([], "Your credential is invalid")
     except Exception as e:
         return response.INTERNAL_SERVER_ERROR([], "Failed to edit note")
 
 
+@jwt_required
+def delete(id):
+    try:
+        current_user = get_jwt_identity()
 
+        if current_user:
+            note = Notes.query.filter_by(id=id).first()
+            if not note:
+                return response.NO_CONTENT([], "No data deleted")
+            
+            db.session.delete(note)
+            db.session.commit()
+
+            return response.OK([], "Successfully delete data")
+
+        else:
+            return response.UNAUTHORIZED([], "Your credential is invalid")
+    except Exception as e:
+        return response.INTERNAL_SERVER_ERROR([], "Failed to delete")
 
 def transform(values):
     array = []
