@@ -37,10 +37,8 @@ def login():
         user_name = request.json['userName'].strip()
         password = request.json['password']
         user = Users.query.filter_by(user_name=user_name).first()
-
         if not user:
             return response.NOT_FOUND([], 'No user found')
-
         if not user.checkPassword(password):
             return response.UNAUTHORIZED([], 'Your credentials is invalid')
 
@@ -59,12 +57,16 @@ def login():
 def show(id):
     try:
         current_user = get_jwt_identity()
-        if current_user and current_user['id'] == id:
-            user = Users.query.filter_by(id=current_user['id']).first()
+        if current_user and current_user['user_id'] == id:
+            user = Users.query.filter_by(id=current_user['user_id']).first()
             if not user:
                 return response.NOT_FOUND([], 'No user found')
+
             data = singleTransform(user)
-            return response.OK(data, "User data loaded")
+
+            return response.OK({
+                "user" : data
+            }, "User data loaded")
 
         else:
             return response.UNAUTHORIZED([], "Your credential is invalid")
@@ -79,6 +81,7 @@ def getToken(id):
     expires_refresh = datetime.timedelta(days=3)
     access_token = create_access_token({'user_id': id}, fresh=True, expires_delta=expires)
     refresh_token = create_refresh_token({'user_id': id}, expires_delta=expires_refresh)
+
     return access_token, refresh_token
 
 
