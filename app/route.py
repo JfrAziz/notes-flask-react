@@ -1,7 +1,11 @@
 from app import app, response
-from flask import request
+from flask import request, render_template
 from app.controller import UsersController, NotesController
 
+@app.route('/')
+@app.route('/index')
+def index():
+    return render_template('base.html')
 
 @app.route('/signup', methods=['POST'])
 def signup():
