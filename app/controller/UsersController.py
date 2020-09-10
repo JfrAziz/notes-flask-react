@@ -21,6 +21,7 @@ def signup():
         access_token, refresh_token = getToken(user.id)
         
         return response.CREATED({
+            "users" : singleTransform(user),
             "access_token": access_token,
             "refresh_token": refresh_token,
         }, 'Successfully Add Users')
@@ -45,6 +46,7 @@ def login():
         access_token, refresh_token = getToken(user.id)    
 
         return response.OK({
+            "users" : singleTransform(user),
             "access_token": access_token,
             "refresh_token": refresh_token,
         }, "Login Succes")
@@ -65,7 +67,7 @@ def show(id):
             data = singleTransform(user)
 
             return response.OK({
-                "user" : data
+                "users" : data
             }, "User data loaded")
 
         else:
@@ -74,7 +76,26 @@ def show(id):
     except Exception as e:
         return response.INTERNAL_SERVER_ERROR([], "Failed to login")
 
+@jwt_required
+def edit(id):
+    try:
+        current_user = get_jwt_identity()
+        if current_user and current_user['user_id'] == id:
+            user = Users.query.filter_by(id=current_user['user_id']).first()
+            if not user:
+                return response.NOT_FOUND([], 'No user found')
 
+            data = singleTransform(user)
+
+            return response.OK({
+                "users" : data
+            }, "User data loaded")
+
+        else:
+            return response.UNAUTHORIZED([], "Your credential is invalid")
+
+    except Exception as e:
+        return response.INTERNAL_SERVER_ERROR([], "Failed to login")
 
 def getToken(id):
     expires = datetime.timedelta(days=1)

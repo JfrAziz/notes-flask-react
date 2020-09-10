@@ -1,12 +1,13 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React from "react";
+import ReactDOM from "react-dom";
+import { DataProvider } from "./data/DataContext"
 
 const App = () => {
-    return (
-        <div>
-            testaaa sada
-        </div>
-    )
-}
+  return (
+    <div>
 
-ReactDOM.render(<App/>, document.getElementById("root"))
+    </div>
+  )
+};
+
+ReactDOM.render(<DataProvider><App /></DataProvider>, document.getElementById("root"));

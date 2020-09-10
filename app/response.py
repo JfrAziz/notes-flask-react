@@ -2,7 +2,7 @@ from flask import jsonify, make_response
 
 def res(data, message, responseCode):
     resource =  {
-        'message': message,
+        'msg': message,
         'data': data
     }
 

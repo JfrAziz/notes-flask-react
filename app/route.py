@@ -7,28 +7,30 @@ from app.controller import UsersController, NotesController
 def index():
     return render_template('base.html')
 
-@app.route('/signup', methods=['POST'])
+@app.route('/api/signup', methods=['POST'])
 def signup():
     if request.method == 'POST':
         return UsersController.signup()
     else:
         return response.METHOD_NOT_ALLOWED([],"Wrong HTTP method")
 
-@app.route('/login', methods=['POST'])
+@app.route('/api/login', methods=['POST'])
 def login():
     if request.method == 'POST':
         return UsersController.login()
     else:
         return response.METHOD_NOT_ALLOWED([],"Wrong HTTP method")
 
-@app.route('/users/<int:id>', methods=['GET'])
-def users(id):
+@app.route('/api/users/<int:id>', methods=['GET' ,'PUT'])
+def users_by_id(id):
     if request.method == 'GET':
         return UsersController.show(id)
+    if request.method == 'PUT':
+        return UsersController.edit(id)
     else:
         return response.METHOD_NOT_ALLOWED([],"Wrong HTTP method")
-
-@app.route('/notes', methods=['GET','POST'])
+        
+@app.route('/api/notes', methods=['GET','POST'])
 def notes():
     if request.method == 'GET':
         return NotesController.index()
@@ -37,7 +39,7 @@ def notes():
     else :
         return response.METHOD_NOT_ALLOWED([], "Wrong HTTP method")
 
-@app.route('/notes/<int:id>', methods=['GET','PUT','DELETE'])
+@app.route('/api/notes/<int:id>', methods=['GET','PUT','DELETE'])
 def notes_by_id(id):
     if request.method == 'PUT':
         return NotesController.edit(id)
