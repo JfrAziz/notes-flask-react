@@ -2,9 +2,9 @@ from app import app, response
 from flask import request, render_template
 from app.controller import UsersController, NotesController
 
-@app.route('/')
-@app.route('/index')
-def index():
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
     return render_template('base.html')
 
 @app.route('/api/signup', methods=['POST'])

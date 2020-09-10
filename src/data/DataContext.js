@@ -3,181 +3,146 @@ import React, { createContext } from "react";
 const DataContext = createContext();
 
 const URL = {
-  SIGNUP : "/api/signup",
-  LOGIN : "/api/login",
-  USERS : "/api/users",
-  NOTES : "/api/notes"
-}
-
+  SIGNUP: "/api/signup",
+  LOGIN: "/api/login",
+  USERS: "/api/users",
+  NOTES: "/api/notes",
+};
 
 const DataProvider = ({ children }) => {
-  
   const storeUserData = (id, access_token, refresh_token) => {
-    localStorage.setItem('id', id)
-    localStorage.setItem('access_token', access_token)
-    localStorage.setItem('refresh_token', refresh_token)
-  }
+    localStorage.setItem("id", id);
+    localStorage.setItem("access_token", access_token);
+    localStorage.setItem("refresh_token", refresh_token);
+  };
 
-  const getAccessToken = () => localStorage.getItem('access_token')
-  const getRefreshToken = () => localStorage.getItem('refresh_token')
-  const getUserId = () => localStorage.getItem('id')
-  
-  const checkUserData = () => getAccessToken() && getRefreshToken() && getUserId() ? true : false
+  const getAccessToken = () => localStorage.getItem("access_token");
+  const getRefreshToken = () => localStorage.getItem("refresh_token");
+  const getUserId = () => localStorage.getItem("id");
+
+  const isLogin = () =>
+    getAccessToken() && getRefreshToken() && getUserId() ? true : false;
+
+  const handleResponse = (resp) =>{
+    if (!resp.ok) throw resp;
+    return resp.json();
+  }
 
   const signup = (data) => {
     let config = {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    }
-    fetch(URL.SIGNUP, config)
-      .then(resp => {
-        if(!resp.ok) throw resp
-        return resp
+    };
+    return fetch(URL.SIGNUP, config)
+      .then(handleResponse)
+      .then((json) => {
+        const { access_token, refresh_token, users } = json.data;
+        storeUserData(users.id, access_token, refresh_token);
+        return true
       })
-      .then(resp => resp.json())
-      .then(json => {
-        const { access_token, refresh_token, users } = json.data
-        storeUserData(users.id, access_token, refresh_token)
-      })   
-      .catch(e => console.log(e))
-  }
+  };
 
   const login = (data) => {
     let config = {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    }
-    fetch(URL.LOGIN, config)
-      .then(resp => {
-        if(!resp.ok) throw resp
-        return resp
+    };
+    return fetch(URL.LOGIN, config)
+      .then(handleResponse)
+      .then((json) => {
+        const { access_token, refresh_token, users } = json.data;
+        storeUserData(users.id, access_token, refresh_token);
+        return true
       })
-      .then(resp => resp.json())
-      .then(json => {
-        const { access_token, refresh_token, users } = json.data
-        storeUserData(users.id, access_token, refresh_token)
-      })
-      .catch(e => console.log(e))
-  }
+  };
 
-  const logout = () => localStorage.clear()
+  const logout = () => localStorage.clear();
 
   const getUsers = () => {
-    if (!checkUserData()) return
+    if (!isLogin()) return;
     let config = {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Authorization': `Bearer ${getAccessToken()}`
+        Authorization: `Bearer ${getAccessToken()}`,
       },
-    }
-    fetch(URL.USERS+`/${getUserId()}`, config)
-      .then(resp => {
-        if(!resp.ok) throw resp
-        return resp
-      })
-      .then(resp => resp.json())
-      .then(data => console.log(data))
-      .catch(e => console.log(e))
-  }
+    };
+    fetch(URL.USERS + `/${getUserId()}`, config)
+      .then(handleResponse)
+      .then((data) => console.log(data))
+  };
 
   const getNotes = () => {
-    if (!checkUserData()) return
+    if (!isLogin()) return;
     let config = {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Authorization': `Bearer ${getAccessToken()}`
+        Authorization: `Bearer ${getAccessToken()}`,
       },
-    }
+    };
     fetch(URL.NOTES, config)
-      .then(resp => {
-        if(!resp.ok) throw resp
-        return resp
-      })
-      .then(resp => resp.json())
-      .then(data => console.log(data))
-      .catch(e => console.log(e))
-  }
+      .then(handleResponse)
+      .then((data) => console.log(data))
+  };
 
   const addNotes = (data) => {
-    if (!checkUserData()) return
+    if (!isLogin()) return;
     let config = {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${getAccessToken()}`
+        Authorization: `Bearer ${getAccessToken()}`,
       },
-      body: JSON.stringify(data)
-    }
+      body: JSON.stringify(data),
+    };
     fetch(URL.NOTES, config)
-      .then(resp => {
-        if(!resp.ok) throw resp
-        return resp
-      })
-      .then(resp => resp.json())
-      .then(data => console.log(data))
-      .catch(e => console.log(e))
-  }
+      .then(handleResponse)
+      .then((data) => console.log(data))
+  };
 
   const getNotesById = (id) => {
-    if (!checkUserData()) return
+    if (!isLogin()) return;
     let config = {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Authorization': `Bearer ${getAccessToken()}`
+        Authorization: `Bearer ${getAccessToken()}`,
       },
-    }
-    fetch(URL.NOTES+`/${id}`, config)
-      .then(resp => {
-        if(!resp.ok) throw resp
-        return resp
-      })
-      .then(resp => resp.json())
-      .then(data => console.log(data))
-      .catch(e => console.log(e))
-  }
+    };
+    fetch(URL.NOTES + `/${id}`, config)
+      .then(handleResponse)
+      .then((data) => console.log(data))
+  };
 
   const deleteNotesById = (id) => {
-    if (!checkUserData()) return
+    if (!isLogin()) return;
     let config = {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
-        'Authorization': `Bearer ${getAccessToken()}`
+        Authorization: `Bearer ${getAccessToken()}`,
       },
-    }
-    fetch(URL.NOTES+`/${id}`, config)
-      .then(resp => {
-        if(!resp.ok) throw resp
-        return resp
-      })
-      .then(resp => resp.json())
-      .then(data => console.log(data))
-      .catch(e => console.log(e))
-  }
+    };
+    fetch(URL.NOTES + `/${id}`, config)
+      .then(handleResponse)
+      .then((data) => console.log(data))
+  };
 
   const editNotesById = (id, data) => {
-    if (!checkUserData()) return
+    if (!isLogin()) return;
     let config = {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Authorization': `Bearer ${getAccessToken()}`
+        Authorization: `Bearer ${getAccessToken()}`,
       },
-      body: JSON.stringify(data)
-    }
-    fetch(URL.NOTES+`/${id}`, config)
-      .then(resp => {
-        if(!resp.ok) throw resp
-        return resp
-      })
-      .then(resp => resp.json())
-      .then(data => console.log(data))
-      .catch(e => console.log(e))
-  }
-
+      body: JSON.stringify(data),
+    };
+    fetch(URL.NOTES + `/${id}`, config)
+      .then(handleResponse)
+      .then((data) => console.log(data))
+  };
 
   return (
     <DataContext.Provider
@@ -185,7 +150,7 @@ const DataProvider = ({ children }) => {
         signup,
         login,
         logout,
-        checkUserData,
+        isLogin,
         getUsers,
         getNotes,
         addNotes,
