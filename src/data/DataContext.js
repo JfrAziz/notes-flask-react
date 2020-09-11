@@ -48,13 +48,12 @@ const DataProvider = ({ children }) => {
 
   const getNotesById = (id) => {
     if (!isLogin) return;
-    let config = {
+    return fetch(URL.NOTES + `/${id}`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${getAccessToken()}`,
       },
-    };
-    fetch(URL.NOTES + `/${id}`, config)
+    })
       .then(handleResponse)
       .then((json) => json.data.notes)
   };
@@ -73,15 +72,14 @@ const DataProvider = ({ children }) => {
 
   const editNotesById = (id, data) => {
     if (!isLogin) return;
-    let config = {
+    return fetch(URL.NOTES + `/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${getAccessToken()}`,
       },
       body: JSON.stringify(data),
-    };
-    fetch(URL.NOTES + `/${id}`, config)
+    })
       .then(handleResponse)
       .then((json) => json.data.notes)
   };

@@ -1,5 +1,5 @@
 import React, {useState, useContext} from 'react'
-import AuthContext from '../data/AuthContext'
+import AuthContext from 'data/AuthContext'
 import { useHistory, Link } from 'react-router-dom'
 
 const Login = () => {

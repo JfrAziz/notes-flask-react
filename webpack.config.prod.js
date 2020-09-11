@@ -23,5 +23,15 @@ module.exports = {
       }
     ]
   },
+  resolve: {
+    alias: {
+        components: path.resolve(__dirname, 'src/components'),
+        shared: path.resolve(__dirname, 'src/components/shared'),
+        pages: path.resolve(__dirname, 'src/pages'),
+        data: path.resolve(__dirname, 'src/data'),
+        styles: path.resolve(__dirname,'src/styles')
+    },
+    extensions: ['.js', '.scss']
+  },
   devtool: ""
 }

@@ -1,61 +1,69 @@
-import React, {useContext, useState, useEffect} from 'react'
-import { useHistory } from 'react-router-dom'
-import AuthContext from '../data/AuthContext'
-import DataContext from '../data/DataContext'
+import React, { useContext, useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import AuthContext from "data/AuthContext";
+import DataContext from "data/DataContext";
+import ModalNotes from 'components/ModalNotes'
 
 const Notes = () => {
-  const history = useHistory()
-  const { logout } = useContext(AuthContext)
-  const { getNotes, addNotes } = useContext(DataContext)
-  const handleLogout = () => logout() && history.push("/login")
+  const history = useHistory();
+  const { logout } = useContext(AuthContext);
+  const { getNotes } = useContext(DataContext)
+  const handleLogout = () => logout() && history.push("/login");
 
-  const [title, setTitle] = useState("")
-  const [notes, setNotes] = useState("")
+  const [isModalOpen, setModalOpen] = useState(false);
   const [ notesData, setNotesData ] = useState([])
+  const [notesId, setNotesId] = useState(null)
 
-  const sendData = async () => {
+  const fetchNotes = async () => {
     try {
-      const response = await addNotes({
-        title : title,
-        notes : notes,
-      })
-      setNotesData([...notesData,response])
+      const result = await getNotes()
+      setNotesData(result)
     } catch (error) {
-      console.log(`error add data : ${error}`)
+      console.log(`error get data : ${error}`)
     }
   }
 
   useEffect(() => {
-    const fetchNotes = async () => {
-      try {
-        const result = await getNotes()
-        setNotesData(result)
-      } catch (error) {
-        console.log(`error get data : ${error}`)
-      }
-    }
-    fetchNotes()
+      fetchNotes()
   }, [])
+
+  const openModal = (id = null) => {
+    setNotesId(id)
+    setModalOpen(true)
+  }
+
+  const closeModal = () => {
+    setModalOpen(false)
+    fetchNotes()
+  }
+  
   return (
     <div id="notes-page">
       <h1>This is notes page</h1>
-      <button onClick={()=>handleLogout()} >Logout</button>
-      <div>
-        <input type="text" placeholder="title" value={title} onChange={(e)=>setTitle(e.target.value)}  ></input>
-        <input type="text" placeholder="notes" value={notes} onChange={(e)=>setNotes(e.target.value)}  ></input>
-        <button onClick={()=>sendData()} >Add Notes</button>
-      </div>
+      <button onClick={() => handleLogout()}>Logout</button>
+      <button onClick={() => openModal()}>Open Modal</button>
+
       {
-        notesData.map((note) => {
+        notesData.map((note, id) => {
           return (
-            <div>
+            <div key={id}>
               {note.notes}
+              {note.id}
+              <button onClick={()=>openModal(note.id)} >Edit</button>
             </div>
           )
         })
       }
-    </div>
-  )
-}
 
-export default Notes
+      {
+        notesId 
+          ? <ModalNotes isOpen={isModalOpen} onClose={closeModal} notesId={notesId}/>
+          : <ModalNotes isOpen={isModalOpen} onClose={closeModal}/>
+      }
+
+      
+    </div>
+  );
+};
+
+export default Notes;
