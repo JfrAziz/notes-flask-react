@@ -34,6 +34,7 @@ def index():
         else:
             return response.UNAUTHORIZED([], "Your credential is invalid")
     except Exception as e:
+        print(e)
         return response.INTERNAL_SERVER_ERROR([], "Failed to load note")
 
 
@@ -43,8 +44,8 @@ def add():
     try:
         current_user = get_jwt_identity()
         if current_user:
-            title = request.json['title']
-            notes = request.json['notes']
+            title = request.json['title'].strip()
+            notes = request.json['notes'].strip()
 
             note = Notes(user_id=current_user['user_id'], title=title, notes=notes)
             db.session.add(note)
@@ -58,6 +59,7 @@ def add():
         else:
             return response.UNAUTHORIZED([], "Your credential is invalid")
     except Exception as e:
+        print(e)
         return response.INTERNAL_SERVER_ERROR([], "Failed to load note")
 
 

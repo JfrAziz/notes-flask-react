@@ -1,35 +1,36 @@
 import React, { useContext } from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
-import DataContext, { DataProvider } from "./data/DataContext";
-import Login from "./page/Login";
-import Notes from "./page/Notes";
-import Sampel from "./page/Sampel";
+import { BrowserRouter, Switch, Route, Redirect,} from "react-router-dom";
+import AuthContext, { AuthProvider } from "./data/AuthContext";
+import { DataProvider } from "./data/DataContext";
+import Login from "./pages/Login";
+import Notes from "./pages/Notes";
+import Register from "./pages/Regsiter";
 
 const App = () => {
-  const { isLogin } = useContext(DataContext)
-  const rootRoute = () => isLogin() ? <Notes/> : <Redirect to="/login"/>
-  const loginRoute = () => !isLogin() ? <Login/> : <Redirect to="/"/>
+  const { isLogin } = useContext(AuthContext);
   return (
-    <Router>
+    <BrowserRouter>
       <Switch>
-        <Route path="/login">
-          {loginRoute()}
+        <Route path="/signup">
+          {!isLogin ? <Register /> : <Redirect to="/" />}
         </Route>
-        <Route path="/sampel">
-          <Sampel/>
+        <Route path="/login">
+          {!isLogin ? <Login /> : <Redirect to="/" />}
         </Route>
         <Route path="/">
-          {rootRoute}
+          {isLogin ? <Notes /> : <Redirect to="/login" />}
         </Route>
       </Switch>
-    </Router>
+    </BrowserRouter>
   );
 };
 
 ReactDOM.render(
-  <DataProvider>
-    <App />
-  </DataProvider>,
+  <AuthProvider>
+    <DataProvider>
+      <App />
+    </DataProvider>
+  </AuthProvider>,
   document.getElementById("root")
 );
