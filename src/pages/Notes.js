@@ -1,13 +1,12 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import AuthContext from "data/AuthContext";
-import DataContext from "data/DataContext";
+import { getNotes } from 'data/ApiConsumer'
 import ModalNotes from 'components/ModalNotes'
 
 const Notes = () => {
   const history = useHistory();
   const { logout } = useContext(AuthContext);
-  const { getNotes } = useContext(DataContext)
   const handleLogout = () => logout() && history.push("/login");
 
   const [isModalOpen, setModalOpen] = useState(false);

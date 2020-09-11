@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import Modal from "shared/Modal";
-import DataContext from "data/DataContext";
+import { getNotesById, addNotes, editNotesById } from "data/ApiConsumer";
 
 const ModalNotes = (props) => {
-  const { getNotesById, addNotes, editNotesById } = useContext(DataContext);
   const { onClose, isOpen, notesId } = props;
 
   const [title, setTitle] = useState("");
@@ -64,7 +63,7 @@ const ModalNotes = (props) => {
       isOpen={isOpen}
       onClose={closeModal}
       continueLabel={continueLabel}
-      onContinue={() => onContinue()}
+      onContinue={onContinue}
     >
       <input
         type="text"

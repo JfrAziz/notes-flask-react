@@ -1,12 +1,11 @@
 import React, { useContext } from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter, Switch, Route, Redirect,} from "react-router-dom";
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import AuthContext, { AuthProvider } from "data/AuthContext";
-import { DataProvider } from "data/DataContext";
 import Login from "pages/Login";
 import Notes from "pages/Notes";
 import Register from "pages/Regsiter";
-import "styles/_index.scss"
+import "styles/_index.scss";
 
 const App = () => {
   const { isLogin } = useContext(AuthContext);
@@ -29,9 +28,7 @@ const App = () => {
 
 ReactDOM.render(
   <AuthProvider>
-    <DataProvider>
-      <App />
-    </DataProvider>
+    <App />
   </AuthProvider>,
   document.getElementById("root")
 );

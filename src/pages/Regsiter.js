@@ -1,10 +1,11 @@
 import React, { useState, useContext } from "react";
-import AuthContext from "../data/AuthContext";
+import AuthContext from "data/AuthContext";
+import { signup } from 'data/ApiConsumer'
 import { useHistory, Link } from "react-router-dom";
 
 const Register = () => {
   const history = useHistory();
-  const { signup, setLogin } = useContext(AuthContext);
+  const { setLogin } = useContext(AuthContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [userName, setUserName] = useState("");

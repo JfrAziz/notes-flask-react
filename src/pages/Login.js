@@ -1,10 +1,11 @@
 import React, {useState, useContext} from 'react'
 import AuthContext from 'data/AuthContext'
+import { login } from 'data/ApiConsumer'
 import { useHistory, Link } from 'react-router-dom'
 
 const Login = () => {
   const history = useHistory()
-  const { login, setLogin } = useContext(AuthContext)
+  const { setLogin } = useContext(AuthContext)
   const [userName, setUserName] = useState("")
   const [password, setPassword] = useState("")
 
