@@ -1,0 +1,8 @@
+#notes-container {
+  display: grid;
+  grid-gap: 20px;
+  grid-template-columns: repeat(3, minmax(200px, 1fr));
+  padding: 20px;
+  max-width: 1080px;
+  margin: 0 auto;
+}

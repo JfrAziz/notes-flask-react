@@ -18,7 +18,7 @@ const ModalNotes = (props) => {
       });
       closeModal()
     } catch (error) {
-      console.log(`error add data : ${error}`);
+      console.log(error);
     }
   };
 
@@ -30,7 +30,7 @@ const ModalNotes = (props) => {
       });
       closeModal()
     } catch (error) {
-      console.log(`error add data : ${error}`);
+      console.log(error);
     }
   };
 

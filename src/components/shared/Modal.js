@@ -1,5 +1,6 @@
 import React from "react";
 import "styles/_modal.scss"
+import Button from "shared/Button";
 
 const Modal = (props) => {
   const {
@@ -16,12 +17,12 @@ const Modal = (props) => {
         <div className="modal-wrapper" onClick={(e) => e.stopPropagation()}>
           <div className="modal-body">{children}</div>
             <div className="modal-button">
-              <button className="btn btn-close" onClick={() => onClose()}>
+              <Button className="btn-close" onClick={() => onClose()}>
                 {closeLabel}
-              </button>
-              <button className="btn btn-add" onClick={() => onContinue()}>
+              </Button>
+              <Button className="btn-add" onClick={() => onContinue()}>
                 {continueLabel}
-              </button>
+              </Button>
             </div>
         </div>
       </div>

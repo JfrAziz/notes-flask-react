@@ -1,0 +1,14 @@
+.notes {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 1px 2px 4px #47454541;
+  transition: all 200ms ease;
+  &:hover {
+    transform: translateY(-10px);
+  }
+}
+
+.notes-btn {
+  margin: 0 10px;
+}

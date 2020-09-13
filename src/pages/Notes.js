@@ -1,8 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import AuthContext from "data/AuthContext";
-import { getNotes } from 'data/ApiConsumer'
-import ModalNotes from 'components/ModalNotes'
+import { getNotes } from "data/ApiConsumer";
+import ModalNotes from "components/ModalNotes";
+import NotesComponent from "components/NotesComponent";
+import "styles/_notesPages.scss"
 
 const Notes = () => {
   const history = useHistory();
@@ -10,57 +12,66 @@ const Notes = () => {
   const handleLogout = () => logout() && history.push("/login");
 
   const [isModalOpen, setModalOpen] = useState(false);
-  const [ notesData, setNotesData ] = useState([])
-  const [notesId, setNotesId] = useState(null)
+  const [notesData, setNotesData] = useState([]);
+  const [notesId, setNotesId] = useState(null);
 
   const fetchNotes = async () => {
     try {
-      const result = await getNotes()
-      setNotesData(result)
+      const result = await getNotes();
+      setNotesData(result);
     } catch (error) {
-      console.log(`error get data : ${error}`)
+      console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
-      fetchNotes()
-  }, [])
+    fetchNotes();
+  }, []);
 
   const openModal = (id = null) => {
-    setNotesId(id)
-    setModalOpen(true)
-  }
+    setNotesId(id);
+    setModalOpen(true);
+  };
 
   const closeModal = () => {
-    setModalOpen(false)
-    fetchNotes()
+    setModalOpen(false);
+    fetchNotes();
+  };
+
+  const deletNotesFromState = (id) => {
+    const newNotes = notesData.filter((item)=> item.id!==id)
+    setNotesData(newNotes)
   }
-  
+
   return (
     <div id="notes-page">
       <h1>This is notes page</h1>
       <button onClick={() => handleLogout()}>Logout</button>
       <button onClick={() => openModal()}>Open Modal</button>
-
-      {
-        notesData.map((note, id) => {
+      <div id="notes-container">
+        {notesData.map(({ id, title, notes }) => {
           return (
-            <div key={id}>
-              {note.notes}
-              {note.id}
-              <button onClick={()=>openModal(note.id)} >Edit</button>
-            </div>
-          )
-        })
-      }
+            <NotesComponent
+              key={id}
+              id={id}
+              title={title}
+              notes={notes}
+              editNotes={() => openModal(id)}
+              afterDelete={()=> deletNotesFromState(id)}
+            />
+          );
+        })}
+      </div>
 
-      {
-        notesId 
-          ? <ModalNotes isOpen={isModalOpen} onClose={closeModal} notesId={notesId}/>
-          : <ModalNotes isOpen={isModalOpen} onClose={closeModal}/>
-      }
-
-      
+      {notesId ? (
+        <ModalNotes
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          notesId={notesId}
+        />
+      ) : (
+        <ModalNotes isOpen={isModalOpen} onClose={closeModal} />
+      )}
     </div>
   );
 };

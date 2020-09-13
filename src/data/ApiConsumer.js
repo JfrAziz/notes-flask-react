@@ -93,7 +93,11 @@ const deleteNotesById = (id) =>
     headers: {
       Authorization: `Bearer ${getAccessToken()}`,
     },
-  }).then(handleResponse);
+  }).then((resp) => {
+    if (!resp.ok) throw resp;
+    if (resp.status == 204) return resp;
+    return resp.json();
+  });
 
 const editNotesById = (id, data) =>
   fetch(URL.NOTES + `/${id}`, {
