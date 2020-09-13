@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import Modal from "shared/Modal";
 import { getNotesById, addNotes, editNotesById } from "data/ApiConsumer";
+import "styles/_modalNotes.scss"
 
 const ModalNotes = (props) => {
   const { onClose, isOpen, notesId } = props;
@@ -64,18 +65,25 @@ const ModalNotes = (props) => {
       onClose={closeModal}
       continueLabel={continueLabel}
       onContinue={onContinue}
-    >
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="title"
-      />
-      <textarea
-        value={notes}
-        onChange={(e) => setNotes(e.target.value)}
-        placeholder="notes"
-      />
+    > 
+      <div className="modal-title">
+        {continueLabel}
+      </div>
+      <div className="modal-notes">
+        <input
+          className="modal-input"
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="title"
+        />
+        <textarea
+          className="modal-textarea"
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          placeholder="notes"
+        />
+      </div>
     </Modal>
   );
 };

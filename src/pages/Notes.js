@@ -1,15 +1,12 @@
-import React, { useContext, useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import AuthContext from "data/AuthContext";
+import React, {  useState, useEffect } from "react";
 import { getNotes } from "data/ApiConsumer";
 import ModalNotes from "components/ModalNotes";
 import NotesComponent from "components/NotesComponent";
+import Header from "components/Header"
 import "styles/_notesPages.scss"
 
 const Notes = () => {
-  const history = useHistory();
-  const { logout } = useContext(AuthContext);
-  const handleLogout = () => logout() && history.push("/login");
+
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [notesData, setNotesData] = useState([]);
@@ -45,9 +42,7 @@ const Notes = () => {
 
   return (
     <div id="notes-page">
-      <h1>This is notes page</h1>
-      <button onClick={() => handleLogout()}>Logout</button>
-      <button onClick={() => openModal()}>Open Modal</button>
+      <Header openModal={()=>openModal()}/>
       <div id="notes-container">
         {notesData.map(({ id, title, notes }) => {
           return (

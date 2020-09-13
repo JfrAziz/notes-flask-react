@@ -1,0 +1,27 @@
+.modal-notes {
+  display: flex;
+  flex-direction: column;
+  margin: 20px 0;
+}
+
+.modal-input {
+  margin: 0 0 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  padding: 5px;
+}
+
+.modal-textarea {
+  margin: 10px 0 0;
+  resize: none;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  height: 200px;
+}
+
+.modal-title {
+  text-align: center;
+  color: #393939;
+  font-weight: bold;
+}

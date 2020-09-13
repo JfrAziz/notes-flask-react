@@ -53,7 +53,7 @@ const getUsers = () =>
     },
   })
     .then(handleResponse)
-    .then((data) => data.users);
+    .then((json) => json.data.users);
 
 const getNotes = () =>
   fetch(URL.NOTES, {

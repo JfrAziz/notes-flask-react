@@ -4,7 +4,7 @@ import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import AuthContext, { AuthProvider } from "data/AuthContext";
 import Login from "pages/Login";
 import Notes from "pages/Notes";
-import Register from "pages/Regsiter";
+import Register from "pages/Register";
 import "styles/_index.scss";
 
 const App = () => {
